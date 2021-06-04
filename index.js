@@ -4,6 +4,7 @@ const fs = require('fs');
 
 
 class Blobs {
+    
     constructor( network , cache_dir ) {
         this.network = network;
         this.cache_dir = cache_dir;
