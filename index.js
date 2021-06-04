@@ -1,29 +1,34 @@
 
 // IMPORT DEPS 
 const fs = require('fs');
-const hre = require("hardhat");
-const network_name = hre.network.name;
 
 
+class Blobs {
+    constructor( network , cache_dir ) {
+        this.network = network;
+        this.cache_dir = cache_dir;
+        if (!fs.existsSync( this.cache_dir )){  
+            fs.mkdirSync(this.cache_dir);  }
+        this.blobs_dir = this.cache_dir + '/blobs';
+        if (!fs.existsSync( this.blobs_dir )){ 
+            fs.mkdirSync(this.blobs_dir); }      
+    }
 
-// MAKE BLOBS DIR IN HARDHAT CACHE
-var cache_dir = './cache';
-if (!fs.existsSync( cache_dir )){  fs.mkdirSync(cache_dir);  }
-cache_dir = './cache/blobs';
-if (!fs.existsSync( cache_dir )){ fs.mkdirSync(cache_dir); }
+    write( name , dat  ){
+        let data = ""+dat
+        fs.writeFileSync( this.blobs_dir+'/'+ this.network+'.'+name , data); 
+    }
+    
+    read( name ){
+        var vl = fs.readFileSync( this.blobs_dir+"/"+this.network+'.'+name, "utf8");
+        return vl;
+    }
 
+}
 
 
 // READ WRITE EACH CREDENTIAL PER NETWORK and SIGNER
-function write( name , dat  ){
-    let data = ""+dat
-    fs.writeFileSync( cache_dir+'/'+ network_name+'.'+name , data); 
-}
-function read( name ){
-    var vl = fs.readFileSync( cache_dir+"/"+network_name+'.'+name, "utf8");
-    return vl;
-}
+
 module.exports = {
-    write:write,
-    read:read
+    Blobs
 }
